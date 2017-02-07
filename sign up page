@@ -1,0 +1,167 @@
+@@ -0,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+fieldset
+{
+  border:10px solid gold;
+  border-radius:4px;
+}
+legend.large:hover
+{
+  font-size: 150%;
+}
+label:hover
+{
+  font-size:150%;
+}
+.left
+{
+  background-color: brown;
+  color:white;
+}
+label.top-left
+{
+  position:relative;
+  bottom:140px;
+}
+
+</style>
+
+<body>
+
+  <h1>Please Enter Your Details For Our Dating Website!</h1>
+
+  <div>
+  <form>
+  <fieldset>
+    <legend class="large">Your face</legend>
+
+    <label for="filechooser">Your image:</label>
+    <input type="file" id="filechooser" name="fileToUpload">
+    <br><img alt="Image Previewer" id="previewer"><br>
+    <script>
+        var filechooser = document.getElementById('filechooser');
+        var previewer = document.getElementById('previewer');
+
+        // 200 KB
+        var maxsize = 200 * 1024;
+
+        filechooser.onchange = function() {
+            var files = this.files;
+            var file = files[0];
+
+
+            if (!/\/(?:jpeg|jpg|png)/i.test(file.type)) return;
+
+            var reader = new FileReader();
+
+            reader.onload = function() {
+                var result = this.result;
+                var img = new Image();
+
+                if (result.length <= maxsize) {
+                    toPreviewer(result);
+                    return;
+                }
+
+                img.onload = function() {
+                    var compressedDataUrl = compress(img, file.type);
+                    toPreviewer(compressedDataUrl);
+
+                    img = null;
+                };
+
+                img.src = result;
+            };
+
+            reader.readAsDataURL(file);
+        };
+
+        function toPreviewer(dataUrl) {
+            previewer.src = dataUrl;
+
+            filechooser.value = '';
+        }
+
+        function compress(img, fileType) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext('2d');
+
+            var width = img.width;
+            var height = img.height;
+
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // compress
+            var base64data = canvas.toDataURL(fileType, 0.75);
+
+            var initSize = img.src.length;
+            console.log('before compress：', initSize);
+            console.log('after compress：', base64data.length);
+            console.log('rate：', 100 * (initSize - base64data.length) / initSize, "%");
+
+            canvas = ctx = null;
+
+            return base64data;
+        }
+    </script>
+
+  </fieldset>
+  <br>
+  <fieldset>
+    <legend class="large">Your General Details</legend>
+    <label for="name">Name:</label>
+      <input type="text" id="name" name="name" placeholder="Your full name"><br>
+    <label for="gender">Gender:</label>
+      <input type="radio" id="gender" name="gender" value="male">Male
+      <input type="radio" name="gender" value="female">Female<br>
+    <label for="age">Age:</label>
+      <input type="number" id="age" min="0" max="100" step="1"
+    name="age" required><br>
+    <label for="date">Date of birth:</label>
+      <input type="date" id="date" name="DOB"><br>
+    <label for="color">Favorite color:</label>
+      <input type="color" id="color" name="color"><br>
+    <label>Which country:</label>
+    <select name="countries">
+      <option value="New Zealand">New Zealand</option>
+      <option value="China">China</option>
+      <option value="Australia">Australia</option>
+    </select><br>
+  </fieldset>
+  <br>
+  <fieldset>
+    <legend class="large">Your Indicators</legend>
+      <label>Height:</label><span class="left">Short</span>
+      <input type="range" min="0" max="100" step="5" value="50">
+      <span style="background-color:purple;color:white;"> Tall</span>
+      <br>
+      <label>Salary:</label><span class="left">Poor</span><input type="range" min="0" max="100" step="5" value="50">
+      <span style="background-color:purple;color:white;">Rich</span>
+      <br>
+  </fieldset>
+  <br>
+  <fieldset>
+    <legend class="large">Your contact Information</legend>
+    <label>Email</label><input type="email" name="email"><br>
+    <label>Mobile</label><input type="number" name="mobile"><br>
+    <label class="top-left">Address</label><textarea name="address" rows="10" cols="20"></textarea><br>
+  <label>Method contact you:</label>
+  <input type="checkbox" name="e-mail" value="email">Email
+  <input type="checkbox" name="whatsapp" value="whatsapp">Whatsapp
+  <input type="checkbox" name="in-app chat" value="in-app chat">in-app chat<br>
+  </fieldset>
+  <br>
+  <input type="submit" value="Submit!">
+</form>
+</div>
+
+</body>
+</html>
